@@ -26,31 +26,33 @@ class AutoTyper:
             return
 
         self.typing = True
-        result_label.config(text="Starting in 3 seconds...")
+        result_label.config(text="Startet in 3 Sekunden...")
         window.update()
         time.sleep(3)
 
-        for line in lines:
-            words = line.split()
-            for word in words:
-                if not self.typing:
-                    break
-
-                for char in word:
+        for i in range(1, 60000):
+            for line in lines:
+                words = line.split()
+                for word in words:
                     if not self.typing:
                         break
-                    pyautogui.press(char)
-
-                interval = random.uniform(1/start_wps, 1/end_wps)
-                time.sleep(interval)
-
-                if not self.typing or word == words[-1]:
+    
+                    for char in word:
+                        if not self.typing:
+                            break
+                        pyautogui.press(char)
+    
+                    interval = random.uniform(start_wps/1000, end_wps/1000)
+                    time.sleep(interval)
+    
+                    if not self.typing or word == words[-1]:
+                        continue
+                    pyautogui.press("space")
+    
+                if not self.typing or line == lines[-1]:
                     continue
-                pyautogui.press("space")
-
-            if not self.typing or line == lines[-1]:
-                continue
-            pyautogui.press("enter")
+                pyautogui.press("enter")
+            
 
         result_label.config(text="Done typing!" if self.typing else "Typing stopped!")
         self.typing = False
@@ -74,25 +76,25 @@ window.title("Auto Typer")
 frame = ttk.Frame(window, padding="10")
 frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
-text_label = ttk.Label(frame, text="Enter your text:")
+text_label = ttk.Label(frame, text="Hier der Text der eingegeben werden soll:")
 text_label.grid(row=0, column=0, sticky=tk.W, pady=5)
 
 text_entry = tk.Text(frame, height=10, width=40)
 text_entry.grid(row=1, column=0, columnspan=2, pady=5)
 
-start_wps_label = ttk.Label(frame, text="Start WPS:")
+start_wps_label = ttk.Label(frame, text="Kürzeste Zeit zwischen Tastenanschlägen in Millisekunden:")
 start_wps_label.grid(row=2, column=0, sticky=tk.W, pady=5)
 
 start_wps_entry = ttk.Entry(frame)
 start_wps_entry.grid(row=2, column=1, pady=5)
 
-end_wps_label = ttk.Label(frame, text="End WPS:")
+end_wps_label = ttk.Label(frame, text="Längste Zeit zwischen Tastenanschlägen in Millisekunden:")
 end_wps_label.grid(row=3, column=0, sticky=tk.W, pady=5)
 
 end_wps_entry = ttk.Entry(frame)
 end_wps_entry.grid(row=3, column=1, pady=5)
 
-start_button = ttk.Button(frame, text="Start Typing (F10)", command=auto_typer.toggle_typing)
+start_button = ttk.Button(frame, text="Tippen beginnen (F10)", command=auto_typer.toggle_typing)
 start_button.grid(row=4, column=0, columnspan=2, pady=10)
 
 result_label = ttk.Label(frame, text="")
